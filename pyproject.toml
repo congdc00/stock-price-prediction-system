@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "crawler-stock"
+version = "0.0.1"
+description = "craw stock data"
+authors = ["Your Name <you@example.com>"]
+readme = "README.md"
+packages = [{include = "crawler_stock"}]
+
+[tool.poetry.dependencies]
+python = "^3.10"
+bs4 = "^0.0.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
