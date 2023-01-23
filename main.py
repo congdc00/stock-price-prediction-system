@@ -1,16 +1,16 @@
 import requests
 from bs4 import BeautifulSoup
-from option import Option
+from utils.option import Option
 import csv
 from datetime import datetime
 
-end_day = "26/11/2022"
+end_day = "17/12/2022"
 name_bank = "VN30INDEX"
 
 
 if __name__ == "__main__":
     datetime_end = datetime.strptime(end_day, '%d/%m/%Y').date()
-    name_file_csv = './' + name_bank + '_2611_1612.csv'
+    name_file_csv = './' + name_bank + '_1712_1701.csv'
     with open(name_file_csv, 'w') as f:
         # create the csv writer
         writer = csv.writer(f)
@@ -57,6 +57,6 @@ if __name__ == "__main__":
             percent_change = percent_change.replace(" ", "")
 
             data = [datetime_now, close, open, high, low, volumn, percent_change]
-
+            print(datetime_now)
             # write a row to the csv file
             writer.writerow(data)

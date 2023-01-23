@@ -1,4 +1,5 @@
 class Option():
+
     @staticmethod
     def get_id(i: int) -> str:
         if i % 2 == 0:
