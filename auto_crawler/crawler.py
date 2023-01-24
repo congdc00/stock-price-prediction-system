@@ -3,15 +3,20 @@ from bs4 import BeautifulSoup
 from utils.option import Option
 import csv
 from datetime import datetime
+from loguru import logger
 
-end_day = "17/12/2022"
+craw4day = "17/12/2022"
 name_bank = "VN30INDEX"
 
 
 if __name__ == "__main__":
-    datetime_end = datetime.strptime(end_day, '%d/%m/%Y').date()
-    name_file_csv = './' + name_bank + '_1712_1701.csv'
+    logger.info("Starting ...")
+
+    datetime_end = datetime.strptime(craw4day, '%d/%m/%Y').date()
+    name_file_csv = './data/' + name_bank + '_1712_1701.csv'
+
     with open(name_file_csv, 'w') as f:
+
         # create the csv writer
         writer = csv.writer(f)
         title = ["Date", "Close", "Open", "High", "Low", "Volumn", "Percent Change"]
@@ -21,6 +26,7 @@ if __name__ == "__main__":
         content = requests.get(link).content
         soup = BeautifulSoup(content, "html.parser")
         list_data = []
+        
         for i in range (0,19):
             id = Option.get_id(i)
             row = soup.find("tr", {"id": id})
@@ -57,6 +63,9 @@ if __name__ == "__main__":
             percent_change = percent_change.replace(" ", "")
 
             data = [datetime_now, close, open, high, low, volumn, percent_change]
-            print(datetime_now)
+            # print(datetime_now)
+
             # write a row to the csv file
             writer.writerow(data)
+
+    logger.success(f"Save file in {name_file_csv}")

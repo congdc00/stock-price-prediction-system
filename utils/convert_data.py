@@ -1,5 +1,7 @@
+# Convert data from download
 import pandas as pd
 import csv
+
 if __name__ == "__main__":
     name_file_csv = "./data/test1.csv"
     df = pd.read_csv(name_file_csv)

@@ -1,14 +1,15 @@
 [tool.poetry]
-name = "crawler-stock"
+name = "crawler"
 version = "0.0.1"
-description = "craw stock data"
-authors = ["Your Name <you@example.com>"]
+description = "for data science"
+authors = ["dinhchicongf9@gmail.com"]
 readme = "README.md"
-packages = [{include = "crawler_stock"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
 bs4 = "^0.0.1"
+loguru = "^0.6.0"
+apache-airflow = {version = "2.5.1", extras = ["celery"]}
 
 
 [build-system]
