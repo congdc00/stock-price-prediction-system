@@ -3,7 +3,6 @@ from statsmodels.tsa.arima.model import ARIMA
 
 # Feature Engineering
 # List of considered Features
-# List of considered Features
 FEATURES = [
              'Close',
              'Open',
