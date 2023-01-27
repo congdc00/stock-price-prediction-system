@@ -79,9 +79,11 @@ services:
     environment:
       POSTGRES_USER: airflow
       POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_DB: test
     volumes:
       - postgres-db-volume:/var/lib/postgresql/data
+    # port:
+    #   - 5432:5432
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
