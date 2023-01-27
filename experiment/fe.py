@@ -1,14 +1,18 @@
 import pandas as pd
+import warnings
 from statsmodels.tsa.arima.model import ARIMA
 
+warnings.filterwarnings('ignore')
+
 # Feature Engineering
+# List of considered Features
 # List of considered Features
 FEATURES = [
              'Close',
              'Open',
              'High',
              'Low',
-             'arima_feature',
+             'ARIMA_resid',
 #             'Volumn',
 #             'Day',
 #             'Month',
