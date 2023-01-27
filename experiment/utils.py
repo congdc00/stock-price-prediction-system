@@ -2,6 +2,8 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn import metrics
+from fe import *
+
 
 def plot(target, prediction, title):
     """
@@ -26,11 +28,11 @@ def evaluation_metric(y_test,y_hat):
 def partition_dataset(sequence_length, data):
     X, y = [], []
     data_len = data.shape[0]
-
+    close_idx = FEATURES.index('Close')
+    
     for i in range(sequence_length, data_len):
         X.append(data[i - sequence_length: i, :])
-        y.append(data[i, 3]) 
-    
+        y.append(data[i, close_idx])    
     X = np.array(X)
     y = np.array(y)
     return X, y

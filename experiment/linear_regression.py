@@ -5,7 +5,6 @@ from datetime import datetime
 from sklearn.preprocessing import RobustScaler
 from utils import *
 
-
 # Sliding window
 def trading_window(data, n):
     data['Target'] = data['Close'].shift(-n)
@@ -31,7 +30,7 @@ X_train, y_train = training_scaled[:training_data_len, :5], training_scaled[:tra
 X_test, y_test = training_scaled[training_data_len:, :5], training_scaled[training_data_len:, -1]
 
 # Linear Regression
-from sklearn.linear_model import LinearRegression, Ridge
+from sklearn.linear_model import LinearRegression
 linear = LinearRegression()
 linear.fit(X_train, y_train)
 

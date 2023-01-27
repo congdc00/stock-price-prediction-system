@@ -91,7 +91,7 @@ def evaluate(model_type):
 
 # Evaluate
 # single-layer LSTM is not only the one with the best time efficiency but also the one with the best performance
-model_type = 2
+model_type = 1
 mse_array = np.zeros(10)
 rmse_array = np.zeros(10)
 mae_array = np.zeros(10)
