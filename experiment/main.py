@@ -17,13 +17,13 @@ class Config:
         self.sequence_length = 15
         self.epochs = 100 
         self.batch_size = 32
-        self.PATIENCE = 8
+        self.patience = 8
 
 config = Config()
 SEQUENCE_LENGTH = config.sequence_length 
 EPOCHS = config.epochs
 BATCH_SIZE = config.batch_size
-PATIENCE = config.PATIENCE
+PATIENCE = config.patience
 
 train_df = pd.read_csv('./data/VN30_clean.csv', parse_dates=['Date'], date_parser=lambda x: datetime.strptime(x, '%Y-%m-%d'))
 train_df.set_index('Date', inplace=True)
