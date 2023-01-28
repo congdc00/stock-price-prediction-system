@@ -12,7 +12,7 @@ default_args = {
 
 with DAG(
     default_args = default_args,
-    dag_id='auto_craw79',
+    dag_id='auto_craw81',
     description='craw data from cafeF',
     start_date = datetime(2023, 1, 26),
     schedule_interval = '@daily',

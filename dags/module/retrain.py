@@ -16,6 +16,7 @@ def retrain():
         cur = conn.cursor()
         
         cur.execute("select * from stock")
+        record = cur.fetchall()
         conn.commit()
         conn.close()
         print("Thành công rồi")
