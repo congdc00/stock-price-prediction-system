@@ -43,6 +43,12 @@ FEATURES = [
            ]
 
 def arima_features(endog):
+    """
+    Args:
+        endog : array_like
+    Returns
+        arima_resid: array_like
+    """
     arima_model = ARIMA(endog=endog, order=(2, 1, 0)).fit()
     arima_resid = arima_model.resid.values
     arima_resid[0] = 0
@@ -50,8 +56,15 @@ def arima_features(endog):
 
 # Feature Engineering
 def create_features(df, arima=True if 'ARIMA_resid' in FEATURES else False, endog=None):
+    """
+    Args:
+        df: Dataframe
+        endog: array_like if FEATURES has ARIMA_resid else default (None)
+    Returns:
+        df_features: Dataframe
+    """
+    
     df = pd.DataFrame(df)
-
     # ARIMA residual
     if arima:
         df['ARIMA_resid'] = arima_features(endog)
