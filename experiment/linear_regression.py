@@ -4,6 +4,8 @@ import numpy as np
 from datetime import datetime
 from sklearn.preprocessing import RobustScaler
 from utils import *
+from sklearn.linear_model import LinearRegression, Ridge
+
 
 # Sliding window
 def trading_window(data, n):
@@ -29,9 +31,12 @@ training_data_len = int(len(data) *  0.95)
 X_train, y_train = training_scaled[:training_data_len, :5], training_scaled[:training_data_len, -1]
 X_test, y_test = training_scaled[training_data_len:, :5], training_scaled[training_data_len:, -1]
 
-# Linear Regression
-from sklearn.linear_model import LinearRegression
-linear = LinearRegression()
+# Linear Regression 
+def regression(ridge=False):
+    linear = Ridge(alpha=1 if ridge else 0)
+    return linear
+
+linear = regression(ridge=False)
 linear.fit(X_train, y_train)
 
 y_predict = linear.predict(X_test)
