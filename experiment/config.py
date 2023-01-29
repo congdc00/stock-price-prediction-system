@@ -7,3 +7,4 @@ class BaseConfig():
 
 class LSTMConfig(BaseConfig):
     lstm_unit = 200
+    num_features = 5
