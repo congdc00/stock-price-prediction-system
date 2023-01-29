@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from module.option import Option
+from option import Option
 import psycopg2
 from datetime import datetime, timezone, date
 
@@ -16,9 +16,13 @@ def retrain():
         cur = conn.cursor()
         
         cur.execute("select * from stock")
+        record = cur.fetchall()
+        print(record)
         conn.commit()
         conn.close()
         print("Thành công rồi")
     except Exception as error:
         print(f"Lỗi lòi mắt")
         print(f" Lỗi là {error}")
+
+retrain()
