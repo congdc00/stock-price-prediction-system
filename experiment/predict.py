@@ -11,10 +11,10 @@ from sklearn.preprocessing import RobustScaler
 
 config = LSTMConfig()
 
-def prediction(df, checkpoint_path):
+def prediction(df: pd.DataFrame, checkpoint_path):
     """
     Args:
-        df: Dataframe
+        df: DataFrame (Column: Close, Open, High, Low, Volumn)
         checkpoint_path: directory
     Returns:
         next_day_close_prediction: float
