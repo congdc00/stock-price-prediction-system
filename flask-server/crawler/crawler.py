@@ -44,7 +44,7 @@ def format_data(datetime_now, row):
     percent_change = percent_change.replace(" ", "")
     percent_change = percent_change.replace("%", "")
 
-    new_data = {'datetime_now': datetime_now, 'close': close, 'open': open, 'high': high, 'low': low, volumn: volumn, percent_change: percent_change}
+    new_data = {'datetime_now': datetime_now, 'close': close, 'open': open, 'high': high, 'low': low, 'volumn': volumn, 'percent_change': percent_change}
     # Convert the date to a datetime object
     dt_object = datetime.strptime(datetime_now, '%Y-%m-%d')
 
@@ -85,9 +85,6 @@ def crawlStock(symbol):
         #     print(date_data)
         #     break
         stockData.append(date_data)
-    
-    nav_ele = soup.find('a', {'href': "javascript:__doPostBack('ctl00$ContentPlaceHolder1$ctl03$pager2','2')"})
-    nav_ele.click()
     
     if stockData!=[]:
         print(stockData)
