@@ -35,6 +35,7 @@ def get_pretrained_model(checkpoint_path):
     model.load_weights(checkpoint_path)
     return model
 
+# retrain in entire dataset with pretrained weights
 if not os.path.exists('training_pretrained_lstm/cp.ckpt.index'):
     cp_callback = ModelCheckpoint(
         filepath='training_pretrained_lstm/cp.ckpt',
@@ -50,7 +51,6 @@ if not os.path.exists('training_pretrained_lstm/cp.ckpt.index'):
         restore_best_weights=True
     )
     # checkpoint_1 has best performance
-    # retrain in entire dataset with pretrained weights
     pretrained_model = get_pretrained_model('training_lstm/cp_1.ckpt')
     # unfreeze all layers
     for layer in pretrained_model.layers:
