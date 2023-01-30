@@ -8,9 +8,18 @@ from config import LSTMConfig
 from fe import *
 from sklearn.preprocessing import RobustScaler
 from lstm import get_model
+from utils import *
 
 
 config = LSTMConfig()
+
+def best_model(sequence_length, input_dims):
+    inputs = Input(shape=(sequence_length, input_dims))
+    lstm_layer = LSTM(200, name='lstm')(inputs)
+    dense = Dense(64, activation='relu', name='dense1')(lstm_layer)
+    output = Dense(1, activation='relu', name='dense2')(dense)
+    model = Model(inputs=inputs, outputs=output)
+    return model
 
 def prediction_with_best_weights(df: pd.DataFrame, checkpoint_path):
     """
@@ -33,7 +42,7 @@ def prediction_with_best_weights(df: pd.DataFrame, checkpoint_path):
     np_close_scaled = scaler_pred.fit_transform(df_close)
 
     # Load best weights when training in entire data
-    model = get_model(1)
+    model = best_model(config.sequence_length, config.num_features)
     model.load_weights(checkpoint_path)
     close_prediction = scaler_pred.inverse_transform(model.predict(tf.expand_dims(np_data[-config.sequence_length: ], 0)))
 
@@ -60,7 +69,7 @@ def prediction_with_pretrained_weights(df: pd.DataFrame, checkpoint_path):
     np_close_scaled = scaler_pred.fit_transform(df_close)
 
     # Load best weights when training in entire data
-    model = get_model(1)
+    model = best_model(config.sequence_length, config.num_features)
     model.load_weights(checkpoint_path)
     close_prediction = scaler_pred.inverse_transform(model.predict(tf.expand_dims(np_data[-config.sequence_length: ], 0)))
 
@@ -90,7 +99,7 @@ def prediction_auto(df: pd.DataFrame, checkpoint_path):
     X, y = partition_dataset(np_data, config=config.sequence_length)
 
     # Load best weights when training in entire data
-    model = get_model(1)
+    model = best_model(config.sequence_length, config.num_features)
     model.load_weights(checkpoint_path)
     model.compile(optimizer='adam', loss='mse')
     model.fit(X, y, batch_size=config.batch_size, epochs=10, verbose=0)
