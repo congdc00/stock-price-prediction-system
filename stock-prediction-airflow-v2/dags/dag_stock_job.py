@@ -78,7 +78,7 @@ def predict():
       'symbol': 'VN30INDEX',
       'lastDate': lastestStockHistory['datetime_now'],
       'lastTimestamp': lastestStockHistory['timestamp'],
-      'predictedClosePrice': float(result),
+      'predictedClosePrice': round(float(result), 2),
     })
     
   except Exception as e:
