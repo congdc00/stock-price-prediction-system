@@ -66,12 +66,25 @@ def index():
     fig = px.line(df, x='Date', y='Close Price')
     graphJSON = json.dumps(fig, cls=plotly.utils.PlotlyJSONEncoder)
 
-    predictedClosePrice = getStockPredictionPrice()
+    # lastestStockHistory = db.stock_history.find_one({'symbol': 'VN30INDEX'}, sort=[("timestamp", -1)]) or {}
+    
+    # predictedClosePrice = getStockPredictionPrice()
+    predictRes = db.stock_prediction.find({'symbol': 'VN30INDEX', 'lastDate':  stock_dict['Date'][0]})
+    
+    predictedClosePrice = round(predictRes[0]['predictedClosePrice'], 2)
     latestClosedPrice = stock_dict['Close Price'][0]
     print(latestClosedPrice)
     print(predictedClosePrice)
     
-    return render_template("index.html", stockSymbols=stockSymbols, graphJSON=graphJSON, predictedClosePrice=predictedClosePrice, latestClosedPrice=latestClosedPrice)
+    percentageChangeQuote = ""
+    isMinus = False
+    if latestClosedPrice > predictedClosePrice:
+        percentageChangeQuote = "Giảm {}%".format(round((latestClosedPrice-predictedClosePrice)*100/latestClosedPrice, 2))
+        isMinus = True
+    else:
+        isMinus = False
+        percentageChangeQuote = "Tăng {}%".format(round((predictedClosePrice-latestClosedPrice)*100/latestClosedPrice, 2))
+    return render_template("index.html", stockSymbols=stockSymbols, graphJSON=graphJSON, predictedClosePrice=predictedClosePrice, latestClosedPrice=latestClosedPrice, percentageChangeQuote=percentageChangeQuote, isMinus=isMinus)
 
 # add new stocks
 @app.route("/api/addStocks", methods=["POST"])
@@ -150,6 +163,55 @@ def getStockPrediction():
     
     result = prediction(df, checkpoint_path)
     
+    return jsonify({"message": "Stocks inserted successfully"}), 201
+
+@app.route("/api/saveStockPrediction", methods=["POST"])
+def saveStockPrediction():
+    # Fetch stock data
+    stockDataCursor = db.stock_history.find({'symbol': 'VN30INDEX'},{"_id":0}).sort('timestamp', 1)
+    
+    # list_cur = list(stockDataCursor)
+    # json_data = dumps(list_cur)
+    # stock_df = DataFrame(json_data)
+    print(stockDataCursor)
+    
+        
+    stock_dict = {}
+    stock_dict['Close'] = []
+    stock_dict['Open'] = []
+    stock_dict['High'] = []
+    stock_dict['Low'] = []
+    stock_dict['Volumn'] = []
+    
+    temp_date = []
+    timestamp2112 = 0
+    
+    for idx, stockData in enumerate(stockDataCursor):
+        stock_dict['Close'].append(float(stockData['close']))
+        stock_dict['Open'].append(stockData['open'])
+        stock_dict['High'].append(stockData['high'])
+        stock_dict['Low'].append(stockData['low'])
+        stock_dict['Volumn'].append(stockData['volumn'])
+        temp_date.append({'date': stockData['datetime_now'], 'timestamp': stockData['timestamp']})
+        if stockData['datetime_now'] == '2022-12-21':
+            timestamp2112 = stockData['timestamp']
+    
+    df = pd.DataFrame(stock_dict)
+    checkpoint_path = 'models/checkpoint/cp.ckpt'
+    
+    for idx, temp_data in enumerate(temp_date):
+        if temp_data['timestamp'] > timestamp2112:
+            temp_df = df[:idx]
+            predate = temp_date[idx-1]
+            result = prediction(temp_df, checkpoint_path)
+            
+            db.stock_prediction.insert_one({
+                'symbol': 'VN30INDEX',
+                'lastDate': predate['date'],
+                'lastTimestamp': predate['timestamp'],
+                'predictedClosePrice': round(float(result), 2),
+            })
+
     return jsonify({"message": "Stocks inserted successfully"}), 201
 
 @app.route("/api/addDataToDBFromCSV", methods=["POST"])

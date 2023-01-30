@@ -69,7 +69,7 @@ def crawlStock(symbol='VN30INDEX'):
     soup = BeautifulSoup(content, "html.parser")
     
     stockData = []
-    for i in range (0,19):
+    for i in range (0,20):
 
         id = Option.get_id(i)
         row = soup.find("tr", {"id": id})

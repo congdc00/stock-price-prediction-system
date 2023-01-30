@@ -26,9 +26,16 @@
     <div style="display: flex; margin: 10px;">
       <span style="margin-right: 10px;">Mã: VN30</span>
     </div>
-    <div style="display: flex; margin: 10px;">
-      <span style="margin-right: 10px;">Giá ngày gần nhất: {{ latestClosedPrice }}</span>
-      <span style="margin-right: 10px;">Dự đoán giá ngày tiếp theo: {{ predictedClosePrice }}</span>
+    <div style="margin: 10px;">
+      <div style="margin-right: 10px;">Giá ngày gần nhất: {{ latestClosedPrice }}</div>
+      <br/>
+      <div style="margin-right: 10px;">Dự đoán giá ngày tiếp theo: {{ predictedClosePrice }}</div>
+      <br/>
+      {% if isMinus%}
+        <div style="font-weight: 600;color: red;margin-right: 10px;">{{ percentageChangeQuote }}</div>
+      {% else %}
+        <div style="font-weight: 600;color: green;">{{ percentageChangeQuote }}</div>
+      {% endif %}
     </div>
 
     <div class="main-app">
