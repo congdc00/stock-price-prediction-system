@@ -1,0 +1,27 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: python -u app.py
+    ports:
+      - "5000:5000"
+    volumes:
+      - .:/app
+    links:
+      - db
+    networks:
+      - flask-network
+  db:
+    image: mongo:4.2.1-bionic
+    ports:
+      - '27017:27017'
+    volumes:
+      - dbdata:/data/db
+    networks:
+      - flask-network
+
+
+networks:
+  flask-network:
+    driver: bridge
