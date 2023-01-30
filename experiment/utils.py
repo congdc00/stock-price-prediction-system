@@ -1,6 +1,7 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import math
 from sklearn import metrics
 from fe import *
 from datetime import datetime
@@ -39,10 +40,7 @@ def partition_dataset(sequence_length, data):
     y = np.array(y)
     return X, y
 
-def get_final_processed_data(data_path, X_test=False):
-    train_df = pd.read_csv(data_path, parse_dates=['Date'], date_parser=lambda x: datetime.strptime(x, '%Y-%m-%d'))
-    train_df.set_index('Date', inplace=True)
-
+def get_final_processed_data(train_df, X_test=False):
     # Get new df after feature engineering
     df_features = create_features(train_df, endog=train_df['Close'])
     data_filtered_ext = df_features[FEATURES]
@@ -56,3 +54,15 @@ def get_final_processed_data(data_path, X_test=False):
         return np_data, data_filtered_ext, df_features 
     else:
         return np_data
+    
+def get_X_y(sequence_length, np_data):
+    # Create the training and test data
+    train_data_len = math.ceil(np_data.shape[0] * 0.95)
+    train_data = np_data[:train_data_len, :]
+    test_data = np_data[train_data_len - sequence_length:, :]
+
+    # Generate training data and test data
+    X_train, y_train = partition_dataset(sequence_length, train_data)
+    X_test, y_test = partition_dataset(sequence_length, test_data)
+
+    return train_data_len, (X_train, y_train), (X_test, y_test)
