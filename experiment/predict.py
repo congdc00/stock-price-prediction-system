@@ -7,7 +7,6 @@ from tensorflow.keras.layers import Input, LSTM, Dense
 from config import LSTMConfig
 from fe import *
 from sklearn.preprocessing import RobustScaler
-from lstm import get_model
 from utils import *
 
 
