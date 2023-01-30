@@ -18,24 +18,16 @@ EPOCHS = config.epochs
 BATCH_SIZE = config.batch_size
 PATIENCE = config.patience
 
-np_data, data_filtered_ext, df_features = get_final_processed_data('./data/VN30_clean.csv', X_test=True)
+train_df = pd.read_csv('./data/VN30_clean.csv', parse_dates=['Date'], date_parser=lambda x: datetime.strptime(x, '%Y-%m-%d'))
+train_df.set_index('Date', inplace=True)
+np_data, data_filtered_ext, df_features = get_final_processed_data(train_df, X_test=True)
 
 # Creating a separate scaler that works on a single column for scaling predictions
 scaler_pred = RobustScaler()
 df_close = pd.DataFrame(data_filtered_ext['Close'])
 np_close_scaled = scaler_pred.fit_transform(df_close)
 
-# Create the training and test data
-train_data_len = math.ceil(np_data.shape[0] * 0.95)
-
-# Create the training and test data
-train_data = np_data[:train_data_len, :]
-test_data = np_data[train_data_len - SEQUENCE_LENGTH:, :]
-
-# Generate training data and test data
-X_train, y_train = partition_dataset(SEQUENCE_LENGTH, train_data)
-X_test, y_test = partition_dataset(SEQUENCE_LENGTH, test_data)
-
+train_data_len, (X_train, y_train), (X_test, y_test) = get_X_y(SEQUENCE_LENGTH, np_data)
 # print(X_train.shape, y_train.shape)
 # print(X_test.shape, y_test.shape)
 
@@ -121,6 +113,12 @@ def print_result(model_type):
 # single-layer LSTM is not only the one with the best time efficiency but also the one with the best performance
 
 def get_predict_by_pretrained(checkpoint_path):
+    """
+    Args:
+        checkpoint_path: directory
+    Returns
+        predict_df: pd.DataFrame
+    """
     model = get_model(model_type=1)
     model.load_weights(checkpoint_path)
     y_pred_scaled = model.predict(X_test)
@@ -133,5 +131,5 @@ def get_predict_by_pretrained(checkpoint_path):
     return predict_df
 
 # checkpoint_1 has best performance
-predict_df = get_predict_by_pretrained('training_lstm/cp_1.ckpt')
-plot(predict_df['Price'], predict_df['Predict'], 'LSTM: Stock Price Prediction')
+# predict_df = get_predict_by_pretrained('training_lstm/cp_1.ckpt')
+# plot(predict_df['Price'], predict_df['Predict'], 'LSTM: Stock Price Prediction')
