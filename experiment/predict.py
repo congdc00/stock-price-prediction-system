@@ -7,7 +7,6 @@ from tensorflow.keras.layers import Input, LSTM, Dense
 from config import LSTMConfig
 from fe import *
 from sklearn.preprocessing import RobustScaler
-from lstm import get_model
 from utils import *
 
 
@@ -96,7 +95,7 @@ def prediction_auto(df: pd.DataFrame, checkpoint_path):
     np_close_scaled = scaler_pred.fit_transform(df_close)
 
     # Partition dataset
-    X, y = partition_dataset(np_data, config=config.sequence_length)
+    X, y = partition_dataset(config.sequence_length, np_data)
 
     # Load best weights when training in entire data
     model = best_model(config.sequence_length, config.num_features)
