@@ -9,14 +9,14 @@ import csv
 import plotly.express as px
 import plotly
 import pandas as pd
-from models.predict import prediction
+from models.predict import prediction_with_best_weights, prediction_with_pretrained_weights, prediction_auto
 
 app = Flask("StockPrediction")
 
 # To change accordingly 
 # print(os.environ)
 # client = MongoClient(os.environ["DB_PORT_27017_TCP_ADDR"], 27017)
-client = MongoClient('mongodb://localhost:27017/')
+client = MongoClient('mongodb+srv://quan1234:quan1234@cluster0.geufshk.mongodb.net/test')
 db = client.stock_prediction
 
 def getStockPredictionPrice():
@@ -40,7 +40,7 @@ def getStockPredictionPrice():
     df = pd.DataFrame(stock_dict)
     checkpoint_path = 'models/checkpoint/cp.ckpt'
     
-    result = prediction(df, checkpoint_path)
+    result = prediction_with_best_weights(df, checkpoint_path)
     
     return result
 
@@ -150,20 +150,18 @@ def getStockPrediction():
         stock_dict['Volumn'].append(stockData['volumn'])
         
     
-    print(len(stock_dict['Close']))
-    print(len(stock_dict['Open']))
-    print(len(stock_dict['High']))
-    print(len(stock_dict['Low']))
-    print(len(stock_dict['Volumn']))
-    
     df = pd.DataFrame(stock_dict)
-    df = df[:-1]
-    print(df)
     checkpoint_path = 'models/checkpoint/cp.ckpt'
     
-    result = prediction(df, checkpoint_path)
+    result_best_weight = prediction_with_best_weights(df, checkpoint_path)
     
-    return jsonify({"message": "Stocks inserted successfully"}), 201
+    checkpoint_path = 'models/training_lstm/cp_1.ckpt'
+    result_pretrained = prediction_with_pretrained_weights(df, checkpoint_path)
+    
+    checkpoint_path = 'models/checkpoint/cp.ckpt'
+    result_auto = prediction_auto(df, checkpoint_path)
+    
+    return jsonify({"message": "Stocks predict successfully", "Best weight model": round(float(result_best_weight), 2), "Pretrained model": round(float(result_pretrained), 2), "Auto train model": round(float(result_auto), 2)}), 201
 
 @app.route("/api/saveStockPrediction", methods=["POST"])
 def saveStockPrediction():
@@ -203,7 +201,7 @@ def saveStockPrediction():
         if temp_data['timestamp'] > timestamp2112:
             temp_df = df[:idx]
             predate = temp_date[idx-1]
-            result = prediction(temp_df, checkpoint_path)
+            result = prediction_with_best_weights(temp_df, checkpoint_path)
             
             db.stock_prediction.insert_one({
                 'symbol': 'VN30INDEX',

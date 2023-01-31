@@ -98,12 +98,12 @@ with DAG(
   schedule_interval = '@daily',
 ) as dag:
   task1 = PythonOperator(
-    task_id = 'task_id_1',
+    task_id = 'crawl_data',
     python_callable=crawl
   )
   
   task2 = PythonOperator(
-    task_id = 'task_id_2',
+    task_id = 'predict_close_price',
     python_callable=predict
   )
 
